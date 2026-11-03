@@ -11,6 +11,16 @@ python -m pip install -e .[test]
 python -m pytest
 ```
 
+## Dashboard
+
+```
+python -m pip install -e .[dashboard]
+python -m streamlit run app/dashboard.py
+```
+
+Satellites need `mass_kg` and `b_star_empirical_m2_kg` in `config/satellites.toml`
+to be simulated; ISS and NOAA-15 are listed but disabled until calibrated.
+
 ## Module map
 
 | Module | Paper section |
