@@ -18,11 +18,12 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest"]
+dashboard = ["streamlit"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "app"]
 addopts = "-ra"
