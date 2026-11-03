@@ -1,0 +1,31 @@
+# Satellite catalogue for the LEO decay study (paper §3.1).
+# All physical quantities are SI: metres, kilograms, m^2, m^2/kg.
+# Only Hubble has published physical properties in the paper; the others
+# carry identifiers, role and nominal altitude band only.
+
+[hubble]
+name = "Hubble Space Telescope"
+norad_id = 20580
+role = "primary passive decay subject"
+passive = true                        # no propulsion -> PCHIP glitch cleaning applies
+nominal_altitude_m = [472_000.0, 539_000.0]
+mass_kg = 11_110.0
+area_m2 = [11.6, 13.2]                # projected cross-section range
+drag_coefficient = 2.2
+b_star_static_m2_kg = 2.297e-3        # §3.4.2 static estimate
+b_star_empirical_m2_kg = 1.143720e-2  # §4.3 calibrated value (Eq. B.4)
+b_star_empirical_sigma_m2_kg = 1.42e-4
+
+[iss]
+name = "International Space Station (ZARYA)"
+norad_id = 25544
+role = "active lower-LEO control"
+passive = false                       # reboosts -> reboost masking applies
+nominal_altitude_m = [405_000.0, 422_000.0]
+
+[noaa15]
+name = "NOAA-15"
+norad_id = 25338
+role = "upper-LEO exospheric drag-floor control"
+passive = true
+nominal_altitude_m = [801_000.0, 806_000.0]

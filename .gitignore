@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.venv/
+venv/
+
+# Local tool settings
+.claude/settings.local.json
+
+# Credentials and downloaded data
+.env
+data/raw/
+*.tle
+
+# The source paper is kept locally, not in version control
+*.pdf
