@@ -10,10 +10,11 @@ venv/
 # Local tool settings
 .claude/settings.local.json
 
-# Credentials and downloaded data
+# Credentials and downloaded data (Space-Track data is never committed)
 .env
-data/raw/
+data/
 *.tle
+config/tle.toml
 
 # The source paper is kept locally, not in version control
 *.pdf
