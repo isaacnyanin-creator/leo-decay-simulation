@@ -37,6 +37,30 @@ python -m pip install -e .[browser] && python -m playwright install chromium
 python tools/screenshot_3d.py OUTPUT_DIR
 ```
 
+## Deploying (Streamlit Community Cloud)
+
+1. Push the repository to GitHub (no Space-Track data is tracked; see below).
+2. On share.streamlit.io: **Create app** → repository, branch, entrypoint **`app/dashboard.py`**.
+3. **Advanced settings → Python version: 3.13** (tested on 3.13.17; the documented default is 3.12).
+4. No secrets are needed. Dependencies come from the root `requirements.txt`, which takes
+   precedence over `pyproject.toml`; the app adds `src/` to `sys.path` itself, so the
+   `leo_decay` package needs no install step.
+
+### Demo mode
+
+The app runs in **demo mode** whenever `.env` or `config/tle.toml` is missing, which is
+always the case on a hosted checkout. Demo mode:
+
+* uses only `config/tle.example.toml` (placeholder elements) for the 3D orbit plane, even if
+  `config/tle.toml` exists;
+* defaults to generated solar events (placeholder rates); manual F10.7/Ap sliders remain
+  available;
+* never loads the Space-Track client or `python-dotenv`, and never opens `.env`;
+* shows a "Demo mode" badge in the sidebar, a banner on both pages and a tag in the 3D view.
+
+`LEO_DEMO_MODE=1` forces demo mode on, `LEO_DEMO_MODE=0` forces it off (on Community Cloud,
+top-level secrets are exposed as environment variables).
+
 ## Module map
 
 | Module | Paper section |

@@ -173,7 +173,7 @@ def cme_tracks(events: pd.DataFrame | None, lag_fn=None) -> list[dict]:
 # ---------------------------------------------------------------- payload
 def build_payload(frame: pd.DataFrame, forcing: pd.DataFrame, events: pd.DataFrame | None,
                   elements: Elements, start_utc: datetime, sat_name: str, run_id: str,
-                  lag_fn=None) -> dict:
+                  lag_fn=None, demo: bool = False) -> dict:
     """Everything the three.js view needs. Times are seconds since ``start_utc``."""
     start_utc = start_utc if start_utc.tzinfo else start_utc.replace(tzinfo=timezone.utc)
     t = frame["day"].to_numpy() * 86400.0
@@ -200,7 +200,7 @@ def build_payload(frame: pd.DataFrame, forcing: pd.DataFrame, events: pd.DataFra
     rho = frame["density_kg_m3"].to_numpy()
     shell_h = shell_altitude_m(f107, ap)
     return {
-        "run_id": run_id,
+        "run_id": run_id, "demo": bool(demo),
         "sat_name": sat_name, "norad_id": el.norad_id,
         "start_utc": start_utc.isoformat(), "duration_s": float(t[-1]),
         "R_E_m": R_EARTH, "omega_earth": OMEGA_EARTH, "gmst0": gmst_rad(start_utc),

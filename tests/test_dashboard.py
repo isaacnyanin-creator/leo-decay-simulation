@@ -11,7 +11,9 @@ APP = str(Path(__file__).resolve().parents[1] / "app" / "dashboard.py")
 
 
 @pytest.fixture
-def app():
+def app(monkeypatch):
+    # Full (non-demo) mode, independent of whether .env / config/tle.toml exist here.
+    monkeypatch.setenv("LEO_DEMO_MODE", "0")
     at = AppTest.from_file(APP, default_timeout=60)
     at.run()
     return at

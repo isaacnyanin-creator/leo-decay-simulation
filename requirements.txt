@@ -1,0 +1,9 @@
+# Runtime dependencies for the Streamlit app (Streamlit Community Cloud installs this file).
+# Pinned to the versions tested on Python 3.13.17 (and 3.15). Entrypoint: app/dashboard.py
+# The app adds src/ to sys.path itself, so the leo_decay package needs no install step.
+# Dev/test, Space-Track and browser-test extras live in pyproject.toml's optional groups.
+streamlit==1.66.1
+altair==6.3.0
+numpy==2.5.4
+pandas==3.1.0
+scipy==1.18.1

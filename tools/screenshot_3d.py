@@ -9,6 +9,7 @@ its test hooks (window.__orbit3d), and writes PNGs plus a console-log report.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import time
@@ -53,10 +54,12 @@ def main(out_dir: str) -> int:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     times = scenario_times()
+    # Full mode (manual sliders by default), whether or not .env / config/tle.toml exist here.
+    env = {**os.environ, "LEO_DEMO_MODE": "0"}
     server = subprocess.Popen(
         [sys.executable, "-m", "streamlit", "run", str(ROOT / "app" / "dashboard.py"),
          "--server.headless", "true", "--server.port", str(PORT), "--browser.gatherUsageStats", "false"],
-        cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     logs, report = [], {"times": times, "shots": []}
     try:
         wait_for_server()

@@ -9,6 +9,7 @@ from dataclasses import dataclass
 import numpy as np
 import streamlit as st
 
+from demo import DemoStatus, demo_status
 from derived import is_simulatable, simulate, simulate_scenario
 from leo_decay.config import load_satellites
 from leo_decay.solar import generate_scenario, load_solar_config
@@ -65,6 +66,18 @@ class Context:
     cfg_hash: str | None
     timeline_day: float
     run_id: str
+    demo: DemoStatus
+
+
+DEMO_BANNER = ("**Demo mode**: no Space-Track data or credentials are used. Orbit elements come "
+               "from the placeholder file `config/tle.example.toml`, and solar events are generated "
+               "from placeholder rates. Results are illustrative only.")
+
+
+def demo_banner(ctx: Context) -> None:
+    """Page-level demo label (both pages)."""
+    if ctx.demo.active:
+        st.info(f"{DEMO_BANNER} ({ctx.demo.summary})", icon="🧪")
 
 
 def _sync_timeline_from_3d(days: int) -> None:
@@ -81,7 +94,11 @@ def _sync_timeline_from_3d(days: int) -> None:
 def sidebar() -> Context:
     """Render the shared sidebar, run (or fetch cached) simulation, return the context."""
     sats = satellites()
+    demo = demo_status()
     with st.sidebar:
+        if demo.active:
+            st.badge("Demo mode", icon="🧪", color="orange")
+            st.caption(f"Placeholder orbit elements and generated solar events ({demo.summary}).")
         st.header("Controls")
         sat_key = st.selectbox("Satellite", list(sats),
                                format_func=lambda k: f"{sats[k].name} (NORAD {sats[k].norad_id})")
@@ -103,7 +120,9 @@ def sidebar() -> Context:
         days = st.slider("Simulation length (days)", 1, 730, DEFAULT_DAYS)
 
         st.divider()
-        solar_mode = st.radio("Solar mode", [MANUAL, GENERATED], key="solar_mode")
+        # Demo mode defaults to generated events; manual sliders remain an option.
+        solar_mode = st.radio("Solar mode", [MANUAL, GENERATED], key="solar_mode",
+                              index=1 if demo.active else 0)
         f107 = ap = seed = f107_mode = None
         show_c = False
         if solar_mode == MANUAL:
@@ -137,7 +156,7 @@ def sidebar() -> Context:
             sat_key, float(mass_kg), seed, h0_km, days, f107_mode, _solar_config_mtime())
 
     run_id = hashlib.sha256(json.dumps(
-        [sat_key, mass_kg, h0_km, days, solar_mode, f107, ap, seed, f107_mode, cfg_hash],
+        [sat_key, mass_kg, h0_km, days, solar_mode, f107, ap, seed, f107_mode, cfg_hash, demo.active],
         default=str).encode()).hexdigest()[:16]
     return Context(sat_key, sat, float(mass_kg), h0_km, days, solar_mode, f107, ap, seed, f107_mode,
-                   show_c, result, csv_text, placeholder, cfg_hash, float(timeline_day), run_id)
+                   show_c, result, csv_text, placeholder, cfg_hash, float(timeline_day), run_id, demo)

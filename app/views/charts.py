@@ -3,13 +3,14 @@
 import streamlit as st
 
 from charts_lib import SERIES, line_chart, marker_rows, theme
-from common import GENERATED, MANUAL
+from common import GENERATED, MANUAL, demo_banner
 from leo_decay.solar import load_solar_config
 
 ctx = st.session_state["ctx"]
 result, df, days, sat = ctx.result, ctx.result.frame, ctx.days, ctx.sat
 
 st.title("LEO orbital decay dashboard")
+demo_banner(ctx)
 
 markers = None
 if ctx.solar_mode == MANUAL:

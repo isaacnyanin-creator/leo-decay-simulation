@@ -267,7 +267,14 @@ function loadPayload(p) {
     (i ? (m - a[i - 1]) / (p.t_s[i] - p.t_s[i - 1]) : (a[1] - a[0]) / (p.t_s[1] - p.t_s[0])));
   buildAurora(p.aurora_pole);
   satLabel.textContent = `${p.sat_name} (NORAD ${p.norad_id})`;
-  document.getElementById('hud-title').textContent = `${p.sat_name} · NORAD ${p.norad_id}`;
+  const title = document.getElementById('hud-title');
+  title.textContent = `${p.sat_name} · NORAD ${p.norad_id}`;
+  if (p.demo) {
+    const tag = document.createElement('span');
+    tag.className = 'demo-tag'; tag.id = 'demo-tag'; tag.textContent = 'Demo mode';
+    tag.title = 'Placeholder orbit elements and generated solar events; no Space-Track data.';
+    title.append(' ', tag);
+  }
   document.getElementById('rate-lo').textContent = fmt(p.rate_range[0], 4);
   document.getElementById('rate-hi').textContent = fmt(p.rate_range[1], 4);
   document.getElementById('rho-lo').textContent = fmtExp(p.density_range[0]);
@@ -466,6 +473,8 @@ window.__orbit3d = {
   },
   state() {
     return { ready: S.ready, frames: S.frames || 0, simDay: S.simT / 86400, exag: S.exag,
+             demo: !!(S.payload && S.payload.demo),
+             elementsPlaceholder: !!(S.payload && S.payload.elements.placeholder),
              textureLoaded: !!S.textureLoaded, activeCmes: S.activeCmes || 0,
              auroraVisible: auroraMeshes.some((m) => m.visible), runId: S.runId };
   },

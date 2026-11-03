@@ -9,7 +9,9 @@ import sys
 from pathlib import Path
 
 APP_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(APP_DIR))
+# App modules and the engine package (src/), so a host doesn't need `pip install -e .`
+# (Streamlit Community Cloud installs requirements.txt only).
+sys.path[:0] = [p for p in (str(APP_DIR), str(APP_DIR.parent / "src")) if p not in sys.path]
 
 import streamlit as st  # noqa: E402
 

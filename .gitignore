@@ -12,6 +12,7 @@ venv/
 
 # Credentials and downloaded data (Space-Track data is never committed)
 .env
+.streamlit/secrets.toml
 data/
 *.tle
 config/tle.toml

@@ -4,8 +4,9 @@ import pandas as pd
 import streamlit as st
 
 from charts_lib import SERIES, line_chart, marker_rows, theme
-from common import GENERATED
+from common import GENERATED, demo_banner
 from components.orbit3d import orbit3d
+from demo import elements_path
 from leo_decay.solar import load_solar_config
 from leo_decay.solar.cmes import transit_lag_hours
 from scene import TLE_PATH, build_payload, load_elements
@@ -14,12 +15,13 @@ ctx = st.session_state["ctx"]
 result = ctx.result
 
 st.title("3D orbit view")
+demo_banner(ctx)
 try:
-    elements = load_elements(ctx.sat_key)
+    elements = load_elements(ctx.sat_key, elements_path(ctx.demo))
 except KeyError as exc:
     st.error(str(exc))
     st.stop()
-if elements.placeholder:
+if elements.placeholder and not ctx.demo.active:
     st.warning(f"`{TLE_PATH.name}` not found, so the orbit plane uses **placeholder elements** from "
                "`config/tle.example.toml`. Run `python tools/fetch_tles.py` to download real ones "
                "from Space-Track.")
@@ -29,6 +31,7 @@ payload = build_payload(
     result.frame, result.forcing, result.events, elements, solar_cfg.start_utc,
     ctx.sat.name, ctx.run_id,
     lag_fn=lambda v: float(transit_lag_hours(v, solar_cfg.storms)),
+    demo=ctx.demo.active,
 )
 st.caption(f"Simulation start {solar_cfg.start_utc:%Y-%m-%d %H:%M} UTC. Orbit radius, decay rate and "
            "density are engine output; the scene adds display geometry only (Sun direction, Earth "
