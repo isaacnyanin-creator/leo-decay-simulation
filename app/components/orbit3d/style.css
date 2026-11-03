@@ -1,0 +1,53 @@
+:root {
+  --surface: #0d0d0d;
+  --panel: rgba(26, 26, 25, 0.82);
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --border: rgba(255, 255, 255, 0.10);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+html, body { margin: 0; height: 100%; background: var(--surface); color: var(--ink); overflow: hidden; }
+#view { position: absolute; inset: 0; }
+#view canvas { display: block; }
+
+.panel {
+  position: absolute; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.35;
+  backdrop-filter: blur(4px);
+}
+#hud { top: 10px; left: 10px; min-width: 230px; }
+#hud-title { font-weight: 600; font-size: 13px; }
+#hud-time { color: var(--ink-2); margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+#hud-values td { padding: 0 6px 0 0; font-variant-numeric: tabular-nums; }
+#hud-values td:first-child { color: var(--ink-2); }
+
+#legend { top: 10px; right: 10px; width: 230px; }
+.legend-row { margin-bottom: 6px; color: var(--ink-2); }
+.bar { height: 8px; border-radius: 4px; margin-top: 3px; }
+.ticks { display: flex; justify-content: space-between; color: var(--muted); font-variant-numeric: tabular-nums; }
+.legend-note { color: var(--muted); }
+
+#controls { left: 10px; right: 10px; bottom: 10px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+#controls label { display: flex; align-items: center; gap: 6px; color: var(--ink-2); }
+#controls output { color: var(--ink); min-width: 18px; font-variant-numeric: tabular-nums; }
+#controls button, #controls select {
+  background: #2c2c2a; color: var(--ink); border: 1px solid var(--border); border-radius: 6px;
+  padding: 4px 10px; font: inherit;
+}
+#controls button:focus-visible, #controls select:focus-visible, #controls input:focus-visible {
+  outline: 2px solid #3987e5; outline-offset: 2px;
+}
+#sync-note { color: var(--muted); margin-left: auto; }
+
+#footnote { left: 10px; bottom: 58px; max-width: 62%; color: var(--ink-2); }
+#footnote .warn { color: #fab219; }
+
+#labels { position: absolute; inset: 0; pointer-events: none; }
+.label {
+  position: absolute; transform: translate(-50%, -130%); white-space: nowrap; font-size: 11px;
+  color: var(--ink); background: rgba(13, 13, 13, 0.7); padding: 1px 5px; border-radius: 4px;
+}
+.label.sun { color: #fff3c4; }
+#error { position: absolute; inset: 40% 10%; color: #e66767; text-align: center; font-size: 14px; }

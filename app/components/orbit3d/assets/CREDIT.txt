@@ -1,0 +1,7 @@
+blue_marble.jpg
+  Source: NASA Earth Observatory, "Blue Marble: Next Generation w/ Topography and Bathymetry",
+          January 2004 (world.topo.bathy.200401.3x5400x2700.jpg), retrieved 2026-11-03 from
+          https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-topography-bathymetry
+  Processing: resized to 4096x2048 (Lanczos), JPEG quality 85.
+  Usage: NASA imagery is generally not subject to copyright in the United States; credit NASA
+         Earth Observatory. The source page itself states no licence terms.

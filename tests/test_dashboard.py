@@ -74,6 +74,35 @@ def test_instantaneous_mode_flagged(app):
     assert any("outside the B* calibration" in i.value for i in app.info)
 
 
+def test_3d_page_renders_component(app):
+    app.switch_page("views/view3d.py").run()
+    assert not app.exception
+    assert len(app.get("vega_lite_chart")) == 3                     # linked charts
+    assert any(e.type == "component_instance" or "component" in e.type
+               for e in app._tree[0].children.values() for e in _walk(e))
+
+
+def _walk(node):
+    yield node
+    for child in getattr(node, "children", {}).values():
+        yield from _walk(child)
+
+
+def test_timeline_cursor_on_charts(app):
+    app.sidebar.slider(key="timeline_day").set_value(10.0).run()
+    assert not app.exception
+    assert app.session_state["timeline_day"] == 10.0
+
+
+def test_3d_view_sync_moves_timeline(app):
+    app.session_state["orbit3d"] = {"day": 12.5, "nonce": 1}
+    app.run()
+    assert app.session_state["timeline_day"] == 12.5
+    app.session_state["orbit3d"] = {"day": 99.0, "nonce": 2}          # clamped to run length
+    app.run()
+    assert app.session_state["timeline_day"] == 35.0
+
+
 def test_doubling_mass_halves_b_star(app):
     app.sidebar.slider(key="mass_hubble").set_value(22_220).run()
     assert not app.exception

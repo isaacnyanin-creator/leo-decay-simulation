@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Orbit 3D</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/addons/" } }
+  </script>
+</head>
+<body>
+  <div id="view"></div>
+
+  <div id="hud" class="panel">
+    <div id="hud-title"></div>
+    <div id="hud-time"></div>
+    <table id="hud-values"></table>
+  </div>
+
+  <div id="labels"></div>
+
+  <div id="legend" class="panel">
+    <div class="legend-row"><span>Trail: decay rate, |da/dt| (km/day)</span>
+      <div class="bar" id="bar-rate"></div><div class="ticks"><span id="rate-lo"></span><span id="rate-hi"></span></div></div>
+    <div class="legend-row"><span>Shell: density at satellite (kg/m³, log)</span>
+      <div class="bar" id="bar-rho"></div><div class="ticks"><span id="rho-lo"></span><span id="rho-hi"></span></div></div>
+    <div class="legend-note" id="shell-note"></div>
+  </div>
+
+  <div id="controls" class="panel">
+    <button id="play" type="button" aria-label="Play">▶ Play</button>
+    <label>Time warp
+      <select id="warp">
+        <option value="1">Real time</option>
+        <option value="60">1 min / s</option>
+        <option value="600">10 min / s</option>
+        <option value="3600">1 h / s</option>
+        <option value="21600">6 h / s</option>
+        <option value="86400" selected>1 day / s</option>
+        <option value="525960">1 year / min</option>
+      </select>
+    </label>
+    <label>Altitude ×<output id="exag-out">10</output>
+      <input id="exag" type="range" min="1" max="50" step="1" value="10">
+    </label>
+    <label class="check"><input id="precess" type="checkbox" checked> J2 precession</label>
+    <span id="sync-note">Pausing syncs the charts' timeline.</span>
+  </div>
+
+  <div id="footnote" class="panel"></div>
+  <div id="error" hidden></div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
