@@ -84,6 +84,26 @@ def test_reentry_day_reported(hubble):
     assert res.frame["day"].iloc[-1] <= res.reentry_day
 
 
+def test_simulate_scenario_quiet_matches_manual(hubble, flat_solar_cfg):
+    from derived import simulate_scenario
+    from leo_decay.solar import generate_scenario
+    sc = generate_scenario(35, seed=1, config=flat_solar_cfg(145.0))
+    gen = simulate_scenario(hubble, hubble.mass_kg, sc, 469_500.0, n_points=36)
+    man = simulate(hubble, hubble.mass_kg, 145.0, 15.0, 469_500.0, 35, n_points=36)
+    np.testing.assert_allclose(gen.frame.to_numpy(), man.frame.to_numpy(), rtol=1e-9, atol=1e-6)
+    assert gen.events is not None and gen.events.empty
+    assert list(gen.forcing.columns) == ["day", "f107_sfu", "ap"]
+
+
+def test_simulate_scenario_reentry_day(hubble):
+    from derived import simulate_scenario
+    from leo_decay.solar import generate_scenario
+    sc = generate_scenario(120, seed=3)
+    res = simulate_scenario(hubble, hubble.mass_kg, sc, 200_000.0)
+    assert res.reentered
+    assert res.frame["day"].iloc[-1] <= res.reentry_day < 120
+
+
 def test_uncalibrated_satellites(satellites):
     assert is_simulatable(satellites["hubble"])
     for key in ("iss", "noaa15"):

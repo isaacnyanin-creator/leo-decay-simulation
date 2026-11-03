@@ -1,0 +1,69 @@
+# =============================================================================
+#  Stochastic solar event generator configuration
+# =============================================================================
+#  !!! EVERY NUMBER IN THIS FILE IS A PLACEHOLDER !!!
+#  Values are order-of-magnitude guesses chosen to give plausible-looking runs.
+#  None has been fitted to data. Calibrate before drawing conclusions:
+#    - Background F10.7 ............ NOAA SWPC observed solar cycle indices
+#    - Flare rates / size spectrum .. NOAA GOES XRS flare reports, NASA DONKI (FLR)
+#    - CME rates / speeds / width ... NASA DONKI (CME, CMEAnalysis)
+#    - Storm lags / peak Ap ......... NASA DONKI (GST, IPS) + NOAA SWPC Ap
+#  Keep `status = "PLACEHOLDER"` until that calibration is done; the dashboard
+#  shows a warning banner while it is set.
+# =============================================================================
+
+status = "PLACEHOLDER"
+
+[time]
+start_utc = "2026-10-15T00:00:00"     # Protocol 3 start
+step_hours = 1.0                       # output grid resolution
+
+[background]                           # PLACEHOLDER: calibrate vs NOAA SWPC F10.7
+cycle_min_utc = "2019-12-01T00:00:00"  # Solar Cycle 25 minimum
+cycle_period_days = 4018.0             # ~11 years
+f107_min = 70.0                        # sfu at cycle minimum
+f107_max = 180.0                       # sfu at cycle maximum (sin^2 shape)
+rotation_period_days = 27.0            # solar rotation (Carrington ~27.3 synodic)
+rotation_amplitude_min_sfu = 2.0       # 27-day amplitude at cycle minimum
+rotation_amplitude_frac = 0.10         # + this fraction of (trend - f107_min)
+noise_sigma_sfu = 6.0                  # stationary std of AR(1) red noise
+noise_correlation_days = 3.0           # AR(1) e-folding time
+f107_floor = 60.0                      # hard lower bound on background F10.7
+
+[flares]                               # PLACEHOLDER: calibrate vs GOES XRS + DONKI FLR
+base_rate_per_day = 3.0                # C1-and-above flares/day at the reference F10.7
+rate_reference_f107 = 100.0            # sfu
+rate_f107_exponent = 1.5               # rate = base * (F / ref)^exponent; 0 disables
+min_flux_w_m2 = 1.0e-6                 # C1.0 (GOES 1-8 A peak flux)
+max_flux_w_m2 = 2.0e-3                 # X20 truncation
+power_law_index = 2.0                  # dN/dS ~ S^-alpha  -> large flares rarer
+delta_f107_at_c1 = 0.5                 # sfu bump for a C1.0 flare
+delta_f107_flux_exponent = 0.5         # bump = delta_at_c1 * (S / 1e-6)^exponent
+rise_hours = 0.25                      # linear rise to peak
+decay_efold_hours_median = 1.0         # lognormal e-folding decay time
+decay_efold_hours_sigma_ln = 0.5
+duration_efolds = 3.0                  # logged duration = rise + this many e-folds
+
+[cmes]                                 # PLACEHOLDER: calibrate vs DONKI CME catalogue
+base_rate_per_day = 1.0                # CMEs/day at the reference F10.7
+rate_reference_f107 = 100.0            # sfu
+rate_f107_exponent = 1.5               # rate rises with F10.7
+speed_median_km_s = 450.0              # lognormal speed distribution
+speed_sigma_ln = 0.5
+speed_min_km_s = 200.0                 # clip
+speed_max_km_s = 3500.0                # clip
+earth_directed_probability = 0.10
+
+[storms]                               # PLACEHOLDER: calibrate vs DONKI GST/IPS + SWPC Ap
+transit_distance_km = 1.496e8          # 1 AU; lag = distance / speed, then clipped
+lag_min_hours = 15.0
+lag_max_hours = 72.0
+quiet_ap = 15.0                        # baseline Ap between storms
+ap_cap = 400.0                         # maximum of the Ap scale
+peak_ap_min = 32.0                     # every storm exceeds Ap = 30
+peak_ap_at_reference_speed = 40.0
+reference_speed_km_s = 500.0
+peak_ap_per_km_s = 0.12                # peak = clip(ref + slope*(v - v_ref), min, cap)
+main_phase_hours = 6.0                 # linear rise from arrival to peak
+recovery_efold_hours = 18.0            # exponential decay back to quiet_ap
+duration_efolds = 3.0                  # logged duration = main phase + this many e-folds

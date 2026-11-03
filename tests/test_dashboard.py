@@ -40,6 +40,40 @@ def test_uncalibrated_satellite_shows_warning(app, key):
     assert len(app.get("vega_lite_chart")) == 0
 
 
+def _generated(app, f107_mode=None):
+    app.sidebar.radio(key="solar_mode").set_value("Generated events").run()
+    if f107_mode:
+        app.sidebar.radio(key="f107_mode").set_value(f107_mode).run()
+    return app
+
+
+def test_generated_mode_renders_events(app):
+    _generated(app)
+    assert not app.exception
+    assert len(app.get("vega_lite_chart")) == 7            # + F10.7 and Ap charts
+    assert any("Placeholder solar model" in w.value for w in app.warning)
+    labels = {m.label for m in app.metric}
+    assert {"Storms", "Peak Ap", "M / X flares", "CMEs (Earth-directed)"} <= labels
+    assert len(app.dataframe) == 2                          # event table + table view
+    events = app.dataframe[0].value
+    assert {"event_id", "type", "peak_ap", "delta_f107"} <= set(events.columns)
+
+
+def test_generated_mode_is_replayable(app):
+    _generated(app)
+    first = app.dataframe[0].value.copy()
+    app.sidebar.number_input(key="seed").set_value(999).run()
+    assert not app.dataframe[0].value.equals(first)
+    app.sidebar.number_input(key="seed").set_value(2026).run()
+    assert app.dataframe[0].value.equals(first)
+
+
+def test_instantaneous_mode_flagged(app):
+    _generated(app, "instantaneous")
+    assert not app.exception
+    assert any("outside the B* calibration" in i.value for i in app.info)
+
+
 def test_doubling_mass_halves_b_star(app):
     app.sidebar.slider(key="mass_hubble").set_value(22_220).run()
     assert not app.exception
