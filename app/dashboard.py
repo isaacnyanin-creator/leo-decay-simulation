@@ -1,4 +1,4 @@
-﻿"""Interactive LEO decay dashboard: entry point with two pages (Charts, 3D view).
+"""Interactive LEO decay dashboard: entry point with two pages (Charts, 3D view).
 
 Run with:  python -m streamlit run app/dashboard.py
 """

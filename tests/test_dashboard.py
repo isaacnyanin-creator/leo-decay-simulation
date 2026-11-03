@@ -1,4 +1,4 @@
-﻿"""Smoke tests for the Streamlit app using streamlit.testing.AppTest."""
+"""Smoke tests for the Streamlit app using streamlit.testing.AppTest."""
 
 from pathlib import Path
 
